@@ -73,3 +73,65 @@ The same fade is used regardless of which segment is last.
 | Fade step 2 | `#44475A` | `68;71;90` |
 | Fade step 3 | `#282A36` | `40;42;54` |
 | Progress unfilled | `#44475A` tints | `68;71;90` → darker |
+
+## Omarchy integration
+
+If you run [Omarchy](https://omarchy.org), the statusline can follow your active
+theme and refresh automatically every time you switch. The integration lives in
+the `omarchy/` subdirectory and leaves the canonical Dracula `statusline-command.sh`
+untouched.
+
+### Install
+
+```bash
+bash omarchy/install.sh
+```
+
+That:
+1. Symlinks a hook into `~/.config/omarchy/hooks/theme-set.d/`
+2. Renders `~/.claude/statusline-command.sh` for whichever theme is currently active
+3. Adds the `statusLine` field to `~/.claude/settings.json` if missing (uses `jq`; if `jq` is absent, prints the snippet to add by hand)
+
+After that, every `omarchy-theme-set <name>` (or `omarchy-theme-next`) will
+regenerate the script before Claude Code's next status refresh. Restart
+Claude Code once after the first install to pick up the settings change.
+
+### How it works
+
+`omarchy/generate-statusline.sh` reads `~/.config/omarchy/current/theme/colors.toml`
+— the palette file Omarchy maintains for the active theme — and substitutes
+values into `omarchy/statusline-command.sh.tmpl`. The bright ANSI slots map onto
+the segment positions:
+
+| Segment | Source slot |
+|---|---|
+| Directory | `color13` (bright magenta) — Dracula purple position |
+| Git | `color9` (bright red) — Dracula pink position |
+| Model | `color14` (bright cyan) |
+| Context | `color10` (bright green) |
+| Lines/diff | `color11` (bright yellow/orange) |
+| Segment text | whichever of `background`/`foreground` has lower luminance |
+
+The trailing fade interpolates from each segment's color toward the theme's
+`background`, so it works on light themes (catppuccin-latte, rose-pine, white)
+as well as dark ones.
+
+### Manual regeneration
+
+You can re-run the generator at any time without going through a theme switch:
+
+```bash
+omarchy/generate-statusline.sh
+```
+
+### Uninstall
+
+```bash
+rm ~/.config/omarchy/hooks/theme-set.d/claude-statusline
+```
+
+The Dracula original can be restored by copying it back from this repo:
+
+```bash
+cp statusline-command.sh ~/.claude/statusline-command.sh
+```
