@@ -1,4 +1,4 @@
-# claude-statusline
+# Claude Statusline
 
 Renders a **Powerline-style status bar** for Claude Code sessions. Reads JSON from stdin (provided by Claude Code) and outputs colored segments separated by arrow glyphs, giving at-a-glance context about your session all with Dracula style colors. 
 
