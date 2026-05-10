@@ -12,8 +12,11 @@ ICON_OPUS=$(printf '\xee\xb5\xa2')
 ICON_HAIKU=$(printf '\xee\x9f\x95')
 ICON_GIT=$(printf '\xee\x82\xa0')
 ICON_DIFF=$(printf '\xf3\xb0\xa6\x93')
-FG="__FG__"
-BG="__BG__"
+FG_DIR="__FG_DIR__"
+FG_GIT="__FG_GIT__"
+FG_MODEL="__FG_MODEL__"
+FG_CTX="__FG_CTX__"
+FG_LINES="__FG_LINES__"
 COLOR_DIR="__COLOR_DIR__"
 COLOR_GIT="__COLOR_GIT__"
 COLOR_MODEL="__COLOR_MODEL__"
@@ -83,39 +86,31 @@ if [ "$context_data" != "null" ]; then
     progress_bar="${progress_bar}━"
   done
 
-  fade_idx=0
   for i in $(seq 1 $empty_segments); do
-    case $fade_idx in
-      0) progress_bar="${progress_bar}\033[38;2;__PROGRESS_FADE_1__m━" ;;
-      1) progress_bar="${progress_bar}\033[38;2;__PROGRESS_FADE_2__m━" ;;
-      2) progress_bar="${progress_bar}\033[38;2;__PROGRESS_FADE_3__m━" ;;
-      3) progress_bar="${progress_bar}\033[38;2;__PROGRESS_FADE_4__m━" ;;
-      *) progress_bar="${progress_bar}\033[38;2;__PROGRESS_FADE_5__m━" ;;
-    esac
-    fade_idx=$((fade_idx + 1))
+    progress_bar="${progress_bar}\033[38;2;__PROGRESS_MUTED__m━"
   done
-  progress_bar="${progress_bar}\033[38;2;${FG}m"
+  progress_bar="${progress_bar}\033[38;2;${FG_CTX}m"
 fi
 
 lines_added=$(echo "$input" | jq -r '.cost.total_lines_added // 0')
 lines_removed=$(echo "$input" | jq -r '.cost.total_lines_removed // 0')
 
 printf "\033[38;2;${COLOR_DIR}m${ARROW_ROUND}\033[0m"
-printf "\033[38;2;${FG}m\033[48;2;${COLOR_DIR}m $dir_display \033[0m"
+printf "\033[38;2;${FG_DIR}m\033[48;2;${COLOR_DIR}m $dir_display \033[0m"
 
 if [ -n "$git_branch" ]; then
   printf "\033[38;2;${COLOR_DIR}m\033[48;2;${COLOR_GIT}m${ARROW_RIGHT}\033[0m"
-  printf "\033[38;2;${FG}m\033[48;2;${COLOR_GIT}m $ICON_GIT $git_branch \033[0m"
+  printf "\033[38;2;${FG_GIT}m\033[48;2;${COLOR_GIT}m $ICON_GIT $git_branch \033[0m"
   printf "\033[38;2;${COLOR_GIT}m\033[48;2;${COLOR_MODEL}m${ARROW_RIGHT}\033[0m"
 else
   printf "\033[38;2;${COLOR_DIR}m\033[48;2;${COLOR_MODEL}m${ARROW_RIGHT}\033[0m"
 fi
 
-printf "\033[38;2;${FG}m\033[48;2;${COLOR_MODEL}m $model_icon $model_display \033[0m"
+printf "\033[38;2;${FG_MODEL}m\033[48;2;${COLOR_MODEL}m $model_icon $model_display \033[0m"
 
 if [ -n "$context_percentage" ]; then
   printf "\033[38;2;${COLOR_MODEL}m\033[48;2;${COLOR_CTX}m${ARROW_RIGHT}\033[0m"
-  printf "\033[38;2;${FG}m\033[48;2;${COLOR_CTX}m "
+  printf "\033[38;2;${FG_CTX}m\033[48;2;${COLOR_CTX}m "
   printf "%b" "$progress_bar"
   printf " ${context_percentage}%% \033[0m"
 
@@ -123,7 +118,7 @@ if [ -n "$context_percentage" ]; then
     printf "\033[38;2;${COLOR_CTX}m\033[48;2;${COLOR_LINES}m${ARROW_RIGHT}\033[0m"
     files_part=""
     [ "$git_changes" != "0" ] && files_part="$ICON_DIFF $git_changes "
-    printf "\033[38;2;${FG}m\033[48;2;${COLOR_LINES}m ${files_part}$ICON_PLUS $lines_added $ICON_MINUS $lines_removed \033[0m"
+    printf "\033[38;2;${FG_LINES}m\033[48;2;${COLOR_LINES}m ${files_part}$ICON_PLUS $lines_added $ICON_MINUS $lines_removed \033[0m"
     printf "\033[38;2;${COLOR_LINES}m\033[48;2;__FADE_LINES_1__m${ARROW_RIGHT}\033[0m"
     printf "\033[38;2;__FADE_LINES_1__m\033[48;2;__FADE_LINES_2__m${ARROW_RIGHT}\033[0m"
     printf "\033[38;2;__FADE_LINES_2__m\033[48;2;__FADE_LINES_3__m${ARROW_RIGHT}\033[0m"
@@ -139,7 +134,7 @@ else
     printf "\033[38;2;${COLOR_MODEL}m\033[48;2;${COLOR_LINES}m${ARROW_RIGHT}\033[0m"
     files_part=""
     [ "$git_changes" != "0" ] && files_part="$ICON_DIFF $git_changes "
-    printf "\033[38;2;${FG}m\033[48;2;${COLOR_LINES}m ${files_part}$ICON_PLUS $lines_added $ICON_MINUS $lines_removed \033[0m"
+    printf "\033[38;2;${FG_LINES}m\033[48;2;${COLOR_LINES}m ${files_part}$ICON_PLUS $lines_added $ICON_MINUS $lines_removed \033[0m"
     printf "\033[38;2;${COLOR_LINES}m\033[48;2;__FADE_LINES_1__m${ARROW_RIGHT}\033[0m"
     printf "\033[38;2;__FADE_LINES_1__m\033[48;2;__FADE_LINES_2__m${ARROW_RIGHT}\033[0m"
     printf "\033[38;2;__FADE_LINES_2__m\033[48;2;__FADE_LINES_3__m${ARROW_RIGHT}\033[0m"

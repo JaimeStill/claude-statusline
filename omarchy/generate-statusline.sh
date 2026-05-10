@@ -46,39 +46,56 @@ lerp_rgb() {
     $(( (ab*(100-t) + bb*t) / 100 ))
 }
 
+# Synthesize a high-contrast tinted text color for a segment background.
+# Dark segments push 80% toward white; bright segments scale to 20% of their
+# value (80% toward black). Result keeps the segment hue but lands at the
+# opposite luminance pole, giving a unique tinted text color per segment.
+contrast_text() {
+  local hex="${1#\#}"
+  local r=$((16#${hex:0:2})) g=$((16#${hex:2:2})) b=$((16#${hex:4:2}))
+  local lum=$(( (2126 * r + 7152 * g + 722 * b) / 10000 ))
+  if (( lum < 128 )); then
+    printf '%d;%d;%d' \
+      $(( r + (255 - r) * 80 / 100 )) \
+      $(( g + (255 - g) * 80 / 100 )) \
+      $(( b + (255 - b) * 80 / 100 ))
+  else
+    printf '%d;%d;%d' \
+      $(( r * 20 / 100 )) \
+      $(( g * 20 / 100 )) \
+      $(( b * 20 / 100 ))
+  fi
+}
+
 ACCENT=$(get_color accent)
 BACKGROUND=$(get_color background)
 FOREGROUND=$(get_color foreground)
-COLOR_DIR_HEX=$(get_color color13)
-COLOR_GIT_HEX=$(get_color color9)
-COLOR_MODEL_HEX=$(get_color color14)
-COLOR_CTX_HEX=$(get_color color10)
-COLOR_LINES_HEX=$(get_color color11)
-COLOR8_HEX=$(get_color color8)
+COLOR_DIR_HEX=$(get_color color5)
+COLOR_GIT_HEX=$(get_color color1)
+COLOR_MODEL_HEX=$(get_color color6)
+COLOR_CTX_HEX=$(get_color color2)
+COLOR_LINES_HEX=$(get_color color3)
 
 : "${COLOR_DIR_HEX:=$ACCENT}"
 : "${COLOR_GIT_HEX:=$ACCENT}"
 : "${COLOR_MODEL_HEX:=$ACCENT}"
 : "${COLOR_CTX_HEX:=$ACCENT}"
 : "${COLOR_LINES_HEX:=$ACCENT}"
-: "${COLOR8_HEX:=$FOREGROUND}"
 
-# Pick whichever of bg/fg is darker as the segment-text color: gives readable
-# dark text on saturated mid-tone segment backgrounds for both light and dark
-# themes.
-if (( $(luminance "$BACKGROUND") <= $(luminance "$FOREGROUND") )); then
-  TEXT_HEX="$BACKGROUND"
-else
-  TEXT_HEX="$FOREGROUND"
-fi
-
-FG=$(hex_to_rgb "$TEXT_HEX")
-BG=$(hex_to_rgb "$BACKGROUND")
 COLOR_DIR=$(hex_to_rgb "$COLOR_DIR_HEX")
 COLOR_GIT=$(hex_to_rgb "$COLOR_GIT_HEX")
 COLOR_MODEL=$(hex_to_rgb "$COLOR_MODEL_HEX")
 COLOR_CTX=$(hex_to_rgb "$COLOR_CTX_HEX")
 COLOR_LINES=$(hex_to_rgb "$COLOR_LINES_HEX")
+
+# Per-segment text color: tinted version of the segment, pushed to the opposite
+# luminance pole. Each segment gets its own readable text color derived from
+# its accent.
+FG_DIR=$(contrast_text "$COLOR_DIR_HEX")
+FG_GIT=$(contrast_text "$COLOR_GIT_HEX")
+FG_MODEL=$(contrast_text "$COLOR_MODEL_HEX")
+FG_CTX=$(contrast_text "$COLOR_CTX_HEX")
+FG_LINES=$(contrast_text "$COLOR_LINES_HEX")
 
 FADE_LINES_1=$(lerp_rgb "$COLOR_LINES_HEX" "$BACKGROUND" 35)
 FADE_LINES_2=$(lerp_rgb "$COLOR_LINES_HEX" "$BACKGROUND" 65)
@@ -90,16 +107,15 @@ FADE_MODEL_1=$(lerp_rgb "$COLOR_MODEL_HEX" "$BACKGROUND" 35)
 FADE_MODEL_2=$(lerp_rgb "$COLOR_MODEL_HEX" "$BACKGROUND" 65)
 FADE_MODEL_3=$(lerp_rgb "$COLOR_MODEL_HEX" "$BACKGROUND" 85)
 
-PROGRESS_FADE_1=$(lerp_rgb "$COLOR8_HEX" "$BACKGROUND" 0)
-PROGRESS_FADE_2=$(lerp_rgb "$COLOR8_HEX" "$BACKGROUND" 20)
-PROGRESS_FADE_3=$(lerp_rgb "$COLOR8_HEX" "$BACKGROUND" 40)
-PROGRESS_FADE_4=$(lerp_rgb "$COLOR8_HEX" "$BACKGROUND" 60)
-PROGRESS_FADE_5=$(lerp_rgb "$COLOR8_HEX" "$BACKGROUND" 80)
+PROGRESS_MUTED=$(hex_to_rgb "$FOREGROUND")
 
 mkdir -p "$(dirname "$TARGET")"
 sed \
-  -e "s|__FG__|$FG|g" \
-  -e "s|__BG__|$BG|g" \
+  -e "s|__FG_DIR__|$FG_DIR|g" \
+  -e "s|__FG_GIT__|$FG_GIT|g" \
+  -e "s|__FG_MODEL__|$FG_MODEL|g" \
+  -e "s|__FG_CTX__|$FG_CTX|g" \
+  -e "s|__FG_LINES__|$FG_LINES|g" \
   -e "s|__COLOR_DIR__|$COLOR_DIR|g" \
   -e "s|__COLOR_GIT__|$COLOR_GIT|g" \
   -e "s|__COLOR_MODEL__|$COLOR_MODEL|g" \
@@ -114,11 +130,7 @@ sed \
   -e "s|__FADE_MODEL_1__|$FADE_MODEL_1|g" \
   -e "s|__FADE_MODEL_2__|$FADE_MODEL_2|g" \
   -e "s|__FADE_MODEL_3__|$FADE_MODEL_3|g" \
-  -e "s|__PROGRESS_FADE_1__|$PROGRESS_FADE_1|g" \
-  -e "s|__PROGRESS_FADE_2__|$PROGRESS_FADE_2|g" \
-  -e "s|__PROGRESS_FADE_3__|$PROGRESS_FADE_3|g" \
-  -e "s|__PROGRESS_FADE_4__|$PROGRESS_FADE_4|g" \
-  -e "s|__PROGRESS_FADE_5__|$PROGRESS_FADE_5|g" \
+  -e "s|__PROGRESS_MUTED__|$PROGRESS_MUTED|g" \
   "$TEMPLATE" > "$TARGET"
 
 chmod +x "$TARGET"

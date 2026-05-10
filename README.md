@@ -74,7 +74,7 @@ The same fade is used regardless of which segment is last.
 | Fade step 3 | `#282A36` | `40;42;54` |
 | Progress unfilled | `#44475A` tints | `68;71;90` → darker |
 
-## Omarchy integration
+## Omarchy Integration
 
 If you run [Omarchy](https://omarchy.org), the statusline can follow your active
 theme and refresh automatically every time you switch. The integration lives in
@@ -84,7 +84,7 @@ untouched.
 ### Install
 
 ```bash
-bash omarchy/install.sh
+omarchy/install.sh
 ```
 
 That:
@@ -100,17 +100,18 @@ Claude Code once after the first install to pick up the settings change.
 
 `omarchy/generate-statusline.sh` reads `~/.config/omarchy/current/theme/colors.toml`
 — the palette file Omarchy maintains for the active theme — and substitutes
-values into `omarchy/statusline-command.sh.tmpl`. The bright ANSI slots map onto
+values into `omarchy/statusline-command.sh.tmpl`. The regular-ANSI slots map onto
 the segment positions:
 
 | Segment | Source slot |
 |---|---|
-| Directory | `color13` (bright magenta) — Dracula purple position |
-| Git | `color9` (bright red) — Dracula pink position |
-| Model | `color14` (bright cyan) |
-| Context | `color10` (bright green) |
-| Lines/diff | `color11` (bright yellow/orange) |
-| Segment text | whichever of `background`/`foreground` has lower luminance |
+| Directory | `color5` (magenta) |
+| Git | `color1` (red) |
+| Model | `color6` (cyan) |
+| Context | `color2` (green) |
+| Lines/diff | `color3` (yellow/orange) |
+| Segment text | synthesized per-segment from the accent itself: dark accents push 80% toward white, bright ones scale 80% toward black, so each segment gets a tinted, high-contrast text color tied to its own hue |
+| Progress bar (unfilled) | `foreground` |
 
 The trailing fade interpolates from each segment's color toward the theme's
 `background`, so it works on light themes (catppuccin-latte, rose-pine, white)
@@ -127,11 +128,35 @@ omarchy/generate-statusline.sh
 ### Uninstall
 
 ```bash
-rm ~/.config/omarchy/hooks/theme-set.d/claude-statusline
+omarchy/uninstall.sh
 ```
 
-The Dracula original can be restored by copying it back from this repo:
+That removes the hook, the generated `~/.claude/statusline-command.sh`, and the `statusLine` field from `~/.claude/settings.json`.
+
+To restore the Dracula original after uninstalling, copy it back from this repo:
 
 ```bash
 cp statusline-command.sh ~/.claude/statusline-command.sh
 ```
+
+Theme | Preview
+------|------
+Catppuccin | ![Catppuccin](./images/catppuccin-statusline.png)
+Catppuccin Latte | ![Catppuccin Latte](./images/catppuccin-latte-statusline.png)
+Ethereal | ![Ethereal](./images/ethereal-statusline.png)
+Everforest | ![Everforest](./images/everforest-statusline.png)
+Flexoki Light | ![Flexoki Light](./images/flexoki-light-statusline.png)
+Gruvbox | ![Gruvbox](./images/gruvbox-statusline.png)
+Hackerman | ![Hackerman](./images/hackerman-statusline.png)
+Kanagawa | ![Kanagawa](./images/kanagawa-statusline.png)
+Lumon | ![Lumon](./images/lumon-statusline.png)
+Matte Black | ![Matte Black](./images/matte-black-statusline.png)
+Miasma | ![Miasma](./images/miasma-statusline.png)
+Nord | ![Nord](./images/nord-statusline.png)
+Osaka Jade | ![Osaka Jade](./images/osaka-jade-statusline.png)
+Retro 82 | ![Retro 82](./images/retro-82-statusline.png)
+Ristretto | ![Ristretto](./images/ristretto-statusline.png)
+Rose Pine | ![Rose Pine](./images/rose-pine-statusline.png)
+Tokyo Night | ![Tokyo Night](./images/tokyo-night-statusline.png)
+Vantablack | ![Vantablack](./images/vantablack-statusline.png)
+White | ![White](./images/white-statusline.png)
