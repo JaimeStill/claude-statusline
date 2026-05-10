@@ -96,6 +96,28 @@ After that, every `omarchy-theme-set <name>` (or `omarchy-theme-next`) will
 regenerate the script before Claude Code's next status refresh. Restart
 Claude Code once after the first install to pick up the settings change.
 
+Theme | Preview
+------|------
+Catppuccin | ![Catppuccin](./images/catppuccin.png)
+Catppuccin Latte | ![Catppuccin Latte](./images/catppuccin-latte.png)
+Ethereal | ![Ethereal](./images/ethereal.png)
+Everforest | ![Everforest](./images/everforest.png)
+Flexoki Light | ![Flexoki Light](./images/flexoki-light.png)
+Gruvbox | ![Gruvbox](./images/gruvbox.png)
+Hackerman | ![Hackerman](./images/hackerman.png)
+Kanagawa | ![Kanagawa](./images/kanagawa.png)
+Lumon | ![Lumon](./images/lumon.png)
+Matte Black | ![Matte Black](./images/matte-black.png)
+Miasma | ![Miasma](./images/miasma.png)
+Nord | ![Nord](./images/nord.png)
+Osaka Jade | ![Osaka Jade](./images/osaka-jade.png)
+Retro 82 | ![Retro 82](./images/retro-82.png)
+Ristretto | ![Ristretto](./images/ristretto.png)
+Rose Pine | ![Rose Pine](./images/rose-pine.png)
+Tokyo Night | ![Tokyo Night](./images/tokyo-night.png)
+Vantablack | ![Vantablack](./images/vantablack.png)
+White | ![White](./images/white.png)
+
 ### How it works
 
 `omarchy/generate-statusline.sh` reads `~/.config/omarchy/current/theme/colors.toml`
@@ -138,25 +160,3 @@ To restore the Dracula original after uninstalling, copy it back from this repo:
 ```bash
 cp statusline-command.sh ~/.claude/statusline-command.sh
 ```
-
-Theme | Preview
-------|------
-Catppuccin | ![Catppuccin](./images/catppuccin-statusline.png)
-Catppuccin Latte | ![Catppuccin Latte](./images/catppuccin-latte-statusline.png)
-Ethereal | ![Ethereal](./images/ethereal-statusline.png)
-Everforest | ![Everforest](./images/everforest-statusline.png)
-Flexoki Light | ![Flexoki Light](./images/flexoki-light-statusline.png)
-Gruvbox | ![Gruvbox](./images/gruvbox-statusline.png)
-Hackerman | ![Hackerman](./images/hackerman-statusline.png)
-Kanagawa | ![Kanagawa](./images/kanagawa-statusline.png)
-Lumon | ![Lumon](./images/lumon-statusline.png)
-Matte Black | ![Matte Black](./images/matte-black-statusline.png)
-Miasma | ![Miasma](./images/miasma-statusline.png)
-Nord | ![Nord](./images/nord-statusline.png)
-Osaka Jade | ![Osaka Jade](./images/osaka-jade-statusline.png)
-Retro 82 | ![Retro 82](./images/retro-82-statusline.png)
-Ristretto | ![Ristretto](./images/ristretto-statusline.png)
-Rose Pine | ![Rose Pine](./images/rose-pine-statusline.png)
-Tokyo Night | ![Tokyo Night](./images/tokyo-night-statusline.png)
-Vantablack | ![Vantablack](./images/vantablack-statusline.png)
-White | ![White](./images/white-statusline.png)
