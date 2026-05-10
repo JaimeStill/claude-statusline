@@ -93,8 +93,10 @@ That:
 3. Adds the `statusLine` field to `~/.claude/settings.json` if missing (uses `jq`; if `jq` is absent, prints the snippet to add by hand)
 
 After that, every `omarchy-theme-set <name>` (or `omarchy-theme-next`) will
-regenerate the script before Claude Code's next status refresh. Restart
-Claude Code once after the first install to pick up the settings change.
+regenerate the script before Claude Code's next status refresh.
+
+> [!NOTE]  
+> If you have a Claude Code session running when you switch themes, you will need to send a new prompt for the statusline to update. There's currently no way to trigger this programmatically.
 
 Theme | Preview
 ------|------
